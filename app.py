@@ -163,6 +163,16 @@ from scipy.signal import butter, filtfilt
 import pywt
 import joblib
 
+
+# Label to full name mapping
+label_mapping = {
+    'A': 'Atrial Fibrillation',
+    'N': 'Normal Sinus Rhythm',
+    'O': 'Other Rhythm',
+    '~': 'Noisy Signal'
+}
+
+
 # --- Helper Functions ---
 
 def str_to_clean_float_list(s):
@@ -311,7 +321,9 @@ if uploaded_file is not None:
 
                 # Predict
                 prediction = model.predict(features_df)[0]
-                st.success(f"Predicted Class: **{prediction}**")
+                full_label = label_mapping.get(prediction, prediction)  # fallback to original if not in mapping
+                st.success(f"Predicted Class: **{full_label}**")
+
 
                 
 
