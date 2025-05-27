@@ -313,8 +313,7 @@ if uploaded_file is not None:
                 prediction = model.predict(features_df)[0]
                 st.success(f"Predicted Class: **{prediction}**")
 
-                if st.checkbox("Show Extracted Features"):
-                    st.dataframe(features_df.T.rename(columns={0: 'Value'}))
+                
 
     except Exception as e:
         st.error(f"Error processing the file: {e}")
