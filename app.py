@@ -301,10 +301,8 @@ if uploaded_file is not None:
                 st.pyplot(fig)
 
                 # Extract all features
-                stats = extract_features(signal, fs=300)
-                fft_feats = extract_fft_features(signal)
-                #dwt_feats = extract_wavelet_features(signal)
-                all_features = {**stats, **fft_feats}
+                all_features = extract_features(signal, fs=300)
+
 
 
                 features_df = pd.DataFrame([all_features])
