@@ -303,8 +303,9 @@ if uploaded_file is not None:
                 # Extract all features
                 stats = extract_features(signal, fs=300)
                 fft_feats = extract_fft_features(signal)
-                dwt_feats = extract_wavelet_features(signal)
-                all_features = {**stats, **fft_feats, **dwt_feats}
+                #dwt_feats = extract_wavelet_features(signal)
+                all_features = {**stats, **fft_feats}
+
 
                 features_df = pd.DataFrame([all_features])
                 if feature_names:
