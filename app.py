@@ -211,11 +211,17 @@ def extract_fft_features(signal, sampling_rate=300):
 def extract_wavelet_features(signal, wavelet='db4', level=5):
     coeffs = pywt.wavedec(signal, wavelet, level=level)
     features = {}
+    labels = [f"A{level}"] + [f"D{l}" for l in range(level, 0, -1)]
+
     for i, coeff in enumerate(coeffs):
-        features[f'dwt_coeff_{i}_mean'] = np.mean(coeff)
-        features[f'dwt_coeff_{i}_std'] = np.std(coeff)
-        features[f'dwt_coeff_{i}_energy'] = np.sum(np.square(coeff))
+        label = labels[i]
+        features[f'{label}_mean'] = np.mean(coeff)
+        features[f'{label}_std'] = np.std(coeff)
+        features[f'{label}_energy'] = np.sum(np.square(coeff))
+        features[f'{label}_entropy'] = -np.sum(np.square(coeff) * np.log(np.abs(coeff) + 1e-8))  # small offset to avoid log(0)
+    
     return features
+
 
 def extract_features(signal, fs=300):
     signal = np.array(signal)
