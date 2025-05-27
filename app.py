@@ -4,16 +4,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import fft, fftfreq
 import pywt
-import joblib  # use joblib or pickle depending on your saved model
+import joblib
 
-# Load the CSV and preprocess
-df = pd.read_csv('Updated_reference.csv')  # Adjust path as needed
+# Load the trained model
+model = joblib.load('ecg_classifier_model.pkl')  # Ensure the model file is in the same directory
 
 # Convert string to list of floats
 def str_to_float_list(s):
     return [float(item) for item in s.strip('[]').split(',') if item.strip() != '']
-
-df.Signal = df.Signal.apply(str_to_float_list)
 
 # Feature extraction functions
 def extract_fft_features(signal, sampling_rate=300):
@@ -45,46 +43,55 @@ def extract_wavelet_features(signal, wavelet='db4', level=5):
         features[f'dwt_coeff_{i}_energy'] = np.sum(np.square(coeff))
     return features
 
-# Load your pre-trained model
-# model = joblib.load('model.pkl')  # Uncomment when model is available
-
-# Fake classifier (mock)
-def mock_classifier(features_df):
-    classes = ['Normal', 'AFib', 'Noise', 'Other']
-    return np.random.choice(classes)
-
 # Streamlit App
 st.title("ECG Signal Classification GUI")
 
-signal_index = st.number_input("Enter Signal Index (0 to {}):".format(len(df)-1), min_value=0, max_value=len(df)-1, step=1)
+# File upload
+uploaded_file = st.file_uploader("Upload your ECG CSV file (must contain 'Signal' column):", type=["csv"])
 
-if st.button("Classify Signal"):
+if uploaded_file is not None:
+    try:
+        df = pd.read_csv(uploaded_file)
 
-    signal = df.Signal[signal_index]
+        if 'Signal' not in df.columns:
+            st.error("Uploaded CSV must contain a 'Signal' column.")
+        else:
+            # Convert string to list of floats
+            df.Signal = df.Signal.apply(str_to_float_list)
 
-    # Plot signal
-    st.subheader("ECG Signal Plot")
-    time_vector = np.arange(len(signal)) / 300
-    fig, ax = plt.subplots()
-    ax.plot(time_vector, signal)
-    ax.set_xlabel("Time (s)")
-    ax.set_ylabel("Amplitude")
-    ax.set_title(f"ECG Signal at Index {signal_index}")
-    ax.grid(True)
-    st.pyplot(fig)
+            st.success("File uploaded and processed successfully.")
 
-    # Extract features
-    fft_features = extract_fft_features(signal)
-    dwt_features = extract_wavelet_features(signal)
-    all_features = {**fft_features, **dwt_features}
-    features_df = pd.DataFrame([all_features])
+            signal_index = st.number_input("Select Signal Index:", min_value=0, max_value=len(df)-1, step=1)
 
-    # Predict class
-    # prediction = model.predict(features_df)[0]  # Use this line with real model
-    prediction = mock_classifier(features_df)  # Mock output
+            if st.button("Classify Signal"):
 
-    st.success(f"Predicted Class: **{prediction}**")
+                signal = df.Signal[signal_index]
 
-    # Optional: Display extracted features
-    if st.checkbox("Show Extracted Features"):
-        st.dataframe(features_df.T.rename(columns={0: 'Value'}))
+                # Plot signal
+                st.subheader("ECG Signal Plot")
+                time_vector = np.arange(len(signal)) / 300
+                fig, ax = plt.subplots()
+                ax.plot(time_vector, signal)
+                ax.set_xlabel("Time (s)")
+                ax.set_ylabel("Amplitude")
+                ax.set_title(f"ECG Signal at Index {signal_index}")
+                ax.grid(True)
+                st.pyplot(fig)
+
+                # Extract features
+                fft_features = extract_fft_features(signal)
+                dwt_features = extract_wavelet_features(signal)
+                all_features = {**fft_features, **dwt_features}
+                features_df = pd.DataFrame([all_features])
+
+                # Predict class
+                prediction = model.predict(features_df)[0]
+                st.success(f"Predicted Class: **{prediction}**")
+
+                if st.checkbox("Show Extracted Features"):
+                    st.dataframe(features_df.T.rename(columns={0: 'Value'}))
+
+    except Exception as e:
+        st.error(f"Error processing the file: {e}")
+else:
+    st.info("Please upload a CSV file to begin.")
