@@ -16,8 +16,34 @@ else:
 # Ensure the model file is in the same directory
 
 # Convert string to list of floats
-def str_to_float_list(s):
-    return [float(item) for item in s.strip('[]').split(',') if item.strip() != '']
+# def str_to_float_list(s):
+#     return [float(item) for item in s.strip('[]').split(',') if item.strip() != '']
+
+
+# -------------------
+# Cleaner function
+# -------------------
+def str_to_clean_float_list(s):
+    try:
+        items = s.strip('[]').split(',')
+        floats = []
+        for item in items:
+            item = item.strip()
+            if item and not item in ['-', '--']:
+                try:
+                    floats.append(float(item))
+                except ValueError:
+                    continue
+        return floats
+    except Exception:
+        return []
+
+def clean_uploaded_ecg(df, min_signal_length=100):
+    df['Signal'] = df['Signal'].apply(str_to_clean_float_list)
+    df = df[df['Signal'].apply(lambda x: isinstance(x, list) and len(x) >= min_signal_length)]
+    df.reset_index(drop=True, inplace=True)
+    return df
+
 
 # Feature extraction functions
 def extract_fft_features(signal, sampling_rate=300):
