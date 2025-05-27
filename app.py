@@ -113,7 +113,7 @@ if uploaded_file is not None:
             st.error("Uploaded CSV must contain a 'Signal' column.")
         else:
             # Convert string to list of floats
-            df.Signal = df.Signal.apply(str_to_float_list)
+            df.Signal = df.Signal.apply(str_to_clean_float_list)
 
             st.success("File uploaded and processed successfully.")
 
