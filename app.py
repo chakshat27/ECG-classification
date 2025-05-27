@@ -157,7 +157,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.fft import fft, fftfreq, find_peaks
+from scipy.fft import fft, fftfreq
+from scipy.signal import find_peaks
 from scipy.signal import butter, filtfilt
 import pywt
 import joblib
