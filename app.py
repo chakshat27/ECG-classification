@@ -7,7 +7,13 @@ import pywt
 import joblib
 
 # Load the trained model
-model = joblib.load('ecg_classifier_model.pkl')  # Ensure the model file is in the same directory
+model_file = st.file_uploader("Upload Trained Model (.pkl)", type=["pkl"])
+if model_file is not None:
+    model = joblib.load(model_file)
+else:
+    st.warning("Please upload a trained model file (.pkl) to proceed.")
+    st.stop()
+# Ensure the model file is in the same directory
 
 # Convert string to list of floats
 def str_to_float_list(s):
