@@ -1,7 +1,7 @@
 
 ---
 
-# ❤️ ECG Signal Classification using Machine Learning
+#  ECG Signal Classification using Machine Learning
 
 An end-to-end **ECG (Electrocardiogram) signal classification system** that analyzes raw waveform data, extracts meaningful features, and predicts cardiac rhythm using a trained machine learning model.
 
