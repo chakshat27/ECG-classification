@@ -164,17 +164,7 @@ streamlit run app.py
    * Signal plot
    * Predicted class
 
----
 
-## 📌 Key Highlights
-
-* Combines **signal processing + ML**
-* Handles **real-world noisy ECG data**
-* Uses **adaptive peak detection**
-* Fully interactive UI
-* Modular & extensible pipeline
-
----
 
 ## 🧪 Future Improvements
 
