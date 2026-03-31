@@ -37,15 +37,6 @@ Classify ECG signals into:
 
 ---
 
-## 📂 Project Structure
-
-```bash
-├── app.py                      # Streamlit UI for classification
-├── ecg_classifier_model.pkl   # Trained ML model
-├── ECG-Final.ipynb            # Full pipeline (EDA → Feature Engg → Training)
-├── dataset.csv                # Input ECG dataset
-├── README.md                  # Documentation
-```
 
 ---
 
